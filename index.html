@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<!--
+    Documento HTML. Esto es la base de toda la página web.
+    HTML Document. This is the foundation of the entire website.
+-->
+<html lang="es" class="">
+<head>
+    <!--
+        Configuración del documento. No es visible en la página, pero es vital.
+        Document configuration. Not visible in the page, but it is vital.
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Nutrition - Tu Asistente de Nutrición Personal</title>
+    <!--
+        Librerías externas.
+        External libraries.
+    -->
+    <!--
+        Tailwind CSS: Se usa para el diseño y el estilo (los colores, tamaños, etc.) de forma rápida.
+        Tailwind CSS: Used for fast styling and design (colors, sizes, etc.).
+    -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!--
+        Chart.js: Se usa para crear los gráficos circulares de macronutrientes.
+        Chart.js: Used to create the circular macronutrient charts.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!--
+        Fuentes de Google: Se usa para cargar la tipografía 'Inter' en el sitio web.
+        Google Fonts: Used to load the 'Inter' typeface for the website.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon/favicon.ico">
+
+    <!--
+        Estilos CSS personalizados. Aquí se define el modo claro y oscuro, y otros estilos.
+        Custom CSS styles. This is where light and dark mode, and other styles are defined.
+    -->
+    <style>
+        /* Variables de color. Definimos una paleta de colores para el modo claro y oscuro.
+            Color variables. We define a color palette for light and dark modes.
+        */
+        :root {
+            --background-light: #F9F7F3;
+            --text-light: #1a1a1a;
+            --primary-light: #4A7C59;
+            --secondary-light: #E8E5DF;
+            --accent-light: #8DB38B;
+
+            --background-dark: #1a1a1a;
+            --text-dark: #F0F0F0;
+            --primary-dark: #6EAF84;
+            --secondary-dark: #2C2C2C;
+            --accent-dark: #5A916E;
+        }
+        /* Configuración del desplazamiento suave en la página.
+            Smooth scrolling configuration for the page.
+        */
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Estilos principales del cuerpo de la página.
+            Main styles for the page body.
+        */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-light);
+            color: var(--text-light);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        /* Estilos para el modo oscuro. Estos se activan cuando la clase 'dark' está en el HTML.
+            Styles for dark mode. These activate when the 'dark' class is present in the HTML.
+        */
+        .dark body {
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+        }
+        /*
+            Estilos para los colores primarios, secundarios, y de acento, adaptados a ambos modos.
+            Styles for primary, secondary, and accent colors, adapted for both modes.
+        */
+        .bg-primary { background-color: var(--primary-light); }
+        .dark .bg-primary { background-color: var(--primary-dark); }
+        .text-primary { color: var(--primary-light); }
+        .dark .text-primary { color: var(--primary-dark); }
+        .bg-secondary { background-color: var(--secondary-light); }
+        .dark .bg-secondary { background-color: var(--secondary-dark); }
+        .border-secondary { border-color: var(--secondary-light); }
+        .dark .border-secondary { border-color: var(--secondary-dark); }
+        .accent-bg { background-color: var(--accent-light); }
+        .dark .accent-bg { background-color: var(--accent-dark); }
+        /* Estilos para los campos de entrada de texto.
+            Styles for the text input fields.
+        */
+        .form-input {
+            background-color: var(--secondary-light);
+            border: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+        .dark .form-input {
+            background-color: var(--secondary-dark);
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+        }
+        .dark .form-input:focus {
+            border-color: var(--primary-dark);
+        }
+        /*
+            Estilos para los botones principales.
+            Styles for the main buttons.
+        */
+        .btn-primary {
+            background-color: var(--primary-light);
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .dark .btn-primary {
+            background-color: var(--primary-dark);
+            color: var(--background-dark);
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+        /*
+            Estilos para el contenedor del gráfico.
+            Styles for the chart container.
+        */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: auto;
+            height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        /* Estilos para las sugerencias de autocompletado en los campos de búsqueda.
+            Styles for the autocomplete suggestions in the search fields.
+        */
+        .autocomplete-suggestions {
+            position: absolute;
+            border: 1px solid var(--secondary-dark);
+            z-index: 99;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: var(--background-light);
+        }
+        .dark .autocomplete-suggestions {
+            background-color: var(--secondary-dark);
+            border: 1px solid var(--primary-dark);
+        }
+        .autocomplete-suggestion {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .autocomplete-suggestion:hover {
+            background-color: var(--secondary-light);
+        }
+        .dark .autocomplete-suggestion:hover {
+            background-color: #3a3a3a;
+        }
+        /*
+            Estilos para la animación de carga (el círculo que gira).
+            Styles for the loading animation (the spinning circle).
+        */
+        .loader {
+            border: 4px solid var(--secondary-light);
+            border-top: 4px solid var(--primary-light);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        .dark .loader {
+             border: 4px solid var(--secondary-dark);
+             border-top: 4px solid var(--primary-dark);
+        }
+        /*
+            Definición de la animación de giro.
+            Definition of the spinning animation.
+        */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /*
+            NUEVOS ESTILOS PARA EL PIE DE PÁGINA FLOTANTE
+            NEW STYLES FOR THE FLOATING FOOTER
+        */
+        .fixed-footer {
+            width: 100%;
+            position: relative;
+            background-color: var(--secondary-light);
+            color: var(--text-light);
+            padding: 1rem;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            font-size: 0.875rem;
+        }
+        .dark .fixed-footer {
+            background-color: var(--secondary-dark);
+            color: var(--text-dark);
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .fixed-footer .container {
+            max-width: 900px; /* Limita el ancho en pantallas grandes para mejor legibilidad */
+            margin: auto;
+        }
+
+        /* Estilos para el menú desplegable móvil */
+        #mobile-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: var(--secondary-light);
+            padding: 1rem 0;
+            z-index: 40;
+            border-top: 1px solid var(--text-light);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .dark #mobile-menu {
+            background-color: var(--secondary-dark);
+            border-top: 1px solid var(--text-dark);
+        }
+        #mobile-menu a {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+        #mobile-menu a:hover {
+            background-color: var(--primary-light);
+            color: white;
+        }
+        .dark #mobile-menu a:hover {
+            background-color: var(--primary-dark);
+            color: var(--background-dark);
+        }
+    </style>
+</head>
+<body class="transition-colors duration-300">
+    <!--
+        Barra de navegación. Contiene el logo y los enlaces a las secciones de la página.
+        Navigation bar. Contains the logo and links to the page sections.
+    -->
+    <nav class="bg-secondary sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center relative">
+            <a href="#" class="font-bold text-2xl text-primary">Global Nutrition</a>
+            <div class="flex items-center space-x-4">
+                <!-- Enlaces de navegación para PC. Se ocultan en pantallas pequeñas. -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#calculadora-calorias" class="hover:text-primary transition-colors">Calculadora</a>
+                    <a href="#explorador-alimentos" class="hover:text-primary transition-colors">Alimentos</a>
+                    <a href="#creador-recetas" class="hover:text-primary transition-colors">Recetas</a>
+                    <a href="#planificador-dieta" class="hover:text-primary transition-colors">Planificador</a>
+                    <a href="#sustitutos-alimentos" class="hover:text-primary transition-colors">Sustitutos</a>
+                </div>
+
+                <!-- Botón de menú para móvil. Se oculta en pantallas de PC. -->
+                <button id="mobile-menu-toggle" class="md:hidden p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+                <!-- Botón para cambiar el modo claro/oscuro. -->
+                <button id="theme-toggle" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                    <svg id="theme-icon-light" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <svg id="theme-icon-dark" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <!-- Menú desplegable para móvil. Se muestra/oculta con JavaScript. -->
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#calculadora-calorias" class="hover:text-white transition-colors">Calculadora</a>
+            <a href="#explorador-alimentos" class="hover:text-white transition-colors">Alimentos</a>
+            <a href="#creador-recetas" class="hover:text-white transition-colors">Recetas</a>
+            <a href="#planificador-dieta" class="hover:text-white transition-colors">Planificador</a>
+            <a href="#sustitutos-alimentos" class="hover:text-white transition-colors">Sustitutos</a>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-6 py-12">
+        <!--
+            Sección de cabecera principal. Contiene el título grande y el texto de introducción.
+            Main header section. Contains the large title and introduction text.
+        -->
+        <header class="text-center mb-16">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4">Tu Nutrición, <span class="text-primary">Simplificada</span></h1>
+            <p class="max-w-3xl mx-auto text-lg md:text-xl text-justify">Herramientas gratuitas basadas en ciencia para ayudarte a alcanzar tus objetivos de salud y bienestar. Sin complicaciones, sin costes.</p>
+            <a href="#calculadora-calorias" class="mt-8 inline-block btn-primary font-bold py-3 px-8 rounded-full text-lg shadow-lg transform hover:scale-105 transition-transform">Empezar ahora</a>
+        </header>
+
+        <!--
+            Sección 1: Calculadora de calorías y macronutrientes.
+            Section 1: Calorie and macronutrient calculator.
+        -->
+        <section id="calculadora-calorias" class="py-16 bg-secondary rounded-2xl mb-16">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">1. Calcula tus Necesidades Diarias</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-justify">El primer paso es entender cuánta energía necesita tu cuerpo. Rellena tus datos para obtener una estimación personalizada de tus calorías y macronutrientes diarios.</p>
+                </div>
+                <!-- Formulario para que el usuario introduzca sus datos. / Form for the user to enter their data. -->
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <form id="calories-form" class="space-y-6">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="age" class="block font-medium mb-1">Edad</label>
+                                <input type="number" id="age" class="w-full p-3 rounded-lg form-input" required>
+                            </div>
+                            <div>
+                                <label for="gender" class="block font-medium mb-1">Género</label>
+                                <select id="gender" class="w-full p-3 rounded-lg form-input" required>
+                                    <option value="male">Masculino</option>
+                                    <option value="female">Femenino</option>
+                                </select>
+                            </div>
+                        </div>
+                         <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="weight" class="block font-medium mb-1">Peso (kg)</label>
+                                <input type="number" step="0.1" id="weight" class="w-full p-3 rounded-lg form-input" required>
+                            </div>
+                            <div>
+                                <label for="height" class="block font-medium mb-1">Altura (cm)</label>
+                                <input type="number" id="height" class="w-full p-3 rounded-lg form-input" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="activity" class="block font-medium mb-1">Nivel de Actividad</label>
+                            <select id="activity" class="w-full p-3 rounded-lg form-input" required>
+                                <option value="1.2">Sedentario (poco o ningún ejercicio)</option>
+                                <option value="1.375">Ligero (ejercicio 1-3 días/semana)</option>
+                                <option value="1.55">Moderado (ejercicio 3-5 días/semana)</option>
+                                <option value="1.725">Activo (ejercicio 6-7 días/semana)</option>
+                                <option value="1.9">Muy activo (trabajo físico + ejercicio)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="goal" class="block font-medium mb-1">Objetivo</label>
+                            <select id="goal" class="w-full p-3 rounded-lg form-input" required>
+                                <option value="lose">Perder peso (déficit ligero)</option>
+                                <option value="maintain">Mantener peso</option>
+                                <option value="gain">Ganar músculo (superávit ligero)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full btn-primary font-bold py-4 rounded-lg text-lg">Calcular</button>
+                    </form>
+                    <!-- Contenedor para mostrar los resultados después del cálculo. / Container to show the results after calculation. -->
+                    <div id="results-container" class="text-center hidden">
+                        <h3 class="text-2xl font-bold mb-4">Tus Resultados</h3>
+                        <div id="calories-result" class="mb-6">
+                            <p class="text-lg">Tus calorías diarias estimadas:</p>
+                            <p class="text-5xl font-bold text-primary my-2" id="total-calories"></p>
+                        </div>
+                        <!-- Canvas para dibujar el gráfico circular. / Canvas to draw the donut chart. -->
+                        <div class="chart-container">
+                            <canvas id="macros-chart"></canvas>
+                        </div>
+                        <!-- Resultados de los macronutrientes. / Macronutrient results. -->
+                        <div id="macros-result" class="mt-6 grid grid-cols-3 gap-4 text-center">
+                            <div>
+                                <p class="font-bold text-lg">Proteínas</p>
+                                <p id="protein" class="text-xl"></p>
+                            </div>
+                            <div>
+                                <p class="font-bold text-lg">Carbs</p>
+                                <p id="carbs" class="text-xl"></p>
+                            </div>
+                            <div>
+                                <p class="font-bold text-lg">Grasas</p>
+                                <p id="fats" class="text-xl"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--
+            Sección 2: Explorador de alimentos.
+            Section 2: Food explorer.
+        -->
+        <section id="explorador-alimentos" class="py-16 mb-16">
+            <div class="max-w-4xl mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">2. Explorador de Alimentos</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-justify">Busca cualquier alimento para obtener un desglose nutricional completo. La información es poder, y conocer lo que comes es fundamental para tu éxito.</p>
+                </div>
+                <!-- Campo de búsqueda con autocompletado. / Search field with autocomplete. -->
+                <div class="relative">
+                    <input type="text" id="food-search" placeholder="Busca un alimento, ej: Manzana, Pollo, Arroz..." class="w-full p-4 rounded-lg text-lg form-input shadow-sm">
+                    <div id="food-suggestions" class="autocomplete-suggestions w-full rounded-b-lg hidden"></div>
+                </div>
+                <!-- Contenedor para los detalles del alimento seleccionado. / Container for the selected food's details. -->
+                <div id="food-details-container" class="mt-8 hidden"></div>
+            </div>
+        </section>
+
+        <!--
+            Sección 3: Creador de recetas.
+            Section 3: Recipe creator.
+        -->
+        <section id="creador-recetas" class="py-16 bg-secondary rounded-2xl mb-16">
+             <div class="max-w-5xl mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">3. Creador de Recetas</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-justify">¿Quieres saber qué aporta tu comida favorita? Añade los ingredientes y sus cantidades para calcular las calorías y macros totales de cualquier receta que imagines.</p>
+                </div>
+                <div id="recipe-builder">
+                    <!-- Lista de ingredientes. Aquí se añadirán dinámicamente. / List of ingredients. They will be added dynamically here. -->
+                    <div id="ingredients-list" class="space-y-4 mb-6">
+                    </div>
+                    <!-- Botones para añadir y calcular la receta. / Buttons to add and calculate the recipe. -->
+                    <div class="flex justify-between items-center mb-8">
+                        <button id="add-ingredient" class="btn-primary font-bold py-2 px-4 rounded-lg">+ Añadir Ingrediente</button>
+                        <button id="calculate-recipe" class="accent-bg text-white font-bold py-3 px-6 rounded-lg text-lg">Calcular Receta</button>
+                    </div>
+                </div>
+                 <!-- Contenedor para mostrar los resultados de la receta. / Container to show the recipe results. -->
+                 <div id="recipe-results-container" class="hidden">
+                    <h3 class="text-2xl font-bold mb-4 text-center">Información Nutricional de la Receta</h3>
+                     <div class="grid md:grid-cols-2 gap-8 items-center">
+                         <div class="text-center">
+                            <p class="text-lg">Calorías Totales:</p>
+                            <p class="text-5xl font-bold text-primary my-2" id="recipe-total-calories"></p>
+                            <div class="mt-6 grid grid-cols-3 gap-4">
+                                <div>
+                                    <p class="font-bold text-lg">Proteínas</p>
+                                    <p id="recipe-protein" class="text-xl"></p>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-lg">Carbs</p>
+                                    <p id="recipe-carbs" class="text-xl"></p>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-lg">Grasas</p>
+                                    <p id="recipe-fats" class="text-xl"></p>
+                                </div>
+                            </div>
+                         </div>
+                         <!-- Canvas para el gráfico de la receta. / Canvas for the recipe chart. -->
+                         <div class="chart-container">
+                            <canvas id="recipe-macros-chart"></canvas>
+                        </div>
+                     </div>
+                 </div>
+            </div>
+        </section>
+
+        <!--
+            Sección 4: Generador de plan semanal.
+            Section 4: Weekly plan generator.
+        -->
+        <section id="planificador-dieta" class="py-16 mb-16">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="text-center mb-12">
+                    <!-- Título dinámico para el plan de dieta / Dynamic title for the diet plan -->
+                    <h2 id="diet-planner-title" class="text-3xl md:text-4xl font-bold">4. Generador de Plan Semanal</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-justify">Basado en tus objetivos y preferencias, podemos generar un plan de comidas semanal para inspirarte. Introduce tus calorías diarias, los alimentos que no te gustan, y deja que la magia suceda.</p>
+                </div>
+                <!-- Formulario para generar el plan de dieta. / Form to generate the diet plan. -->
+                <form id="diet-plan-form" class="max-w-2xl mx-auto space-y-6 bg-secondary p-8 rounded-2xl">
+                    <div>
+                        <label for="plan-calories" class="block font-medium mb-1">Tus calorías diarias (Kcal)</label>
+                        <input type="number" id="plan-calories-input" placeholder="Ej: 2200" class="w-full p-3 rounded-lg form-input" required>
+                    </div>
+                     <div>
+                        <label for="disliked-foods" class="block font-medium mb-1">Alimentos que no te gustan (separados por comas)</label>
+                        <textarea id="disliked-foods" rows="3" placeholder="Ej: brócoli, hígado, coliflor" class="w-full p-3 rounded-lg form-input"></textarea>
+                    </div>
+                    <!--
+                        NUEVA FUNCIÓN: Selector de duración del plan.
+                        NEW FEATURE: Plan duration selector.
+                    -->
+                    <div>
+                        <label for="plan-duration" class="block font-medium mb-1">Duración del plan</label>
+                        <select id="plan-duration" class="w-full p-3 rounded-lg form-input">
+                            <option value="weekly">Semanal</option>
+                            <option value="monthly">Mensual</option>
+                            <option value="quarterly">Trimestral</option>
+                        </select>
+                    </div>
+                    <!--
+                        NUEVA FUNCIÓN: Selector de número de comidas.
+                        NEW FEATURE: Number of meals selector.
+                    -->
+                    <div>
+                        <label for="meal-count" class="block font-medium mb-1">Número de comidas al día</label>
+                        <select id="meal-count" class="w-full p-3 rounded-lg form-input">
+                            <option value="3">3 comidas (Desayuno, Comida, Cena)</option>
+                            <option value="4">4 comidas (Desayuno, Comida, Merienda, Cena)</option>
+                            <option value="5">5 comidas (Desayuno, Almuerzo, Comida, Merienda, Cena)</option>
+                        </select>
+                    </div>
+                    <!-- Botón dinámico para generar el plan de dieta / Dynamic button for the diet plan generator -->
+                    <button type="submit" id="diet-plan-button" class="w-full btn-primary font-bold py-4 rounded-lg text-lg">Generar Plan Semanal</button>
+                </form>
+
+                <!-- Animación de carga que se muestra mientras se genera el plan. / Loading animation that shows while the plan is being generated. -->
+                <div id="diet-plan-loader" class="text-center my-12 hidden">
+                    <div class="loader mx-auto"></div>
+                    <p class="mt-4 font-semibold">Creando tu plan personalizado...</p>
+                </div>
+                <!-- Contenedor para el plan de dieta generado. / Container for the generated diet plan. -->
+                <div id="diet-plan-container" class="mt-12 hidden"></div>
+            </div>
+        </section>
+
+        <!--
+            NUEVA SECCIÓN: Sustitutos Inteligentes
+            NEW SECTION: Smart Substitutes
+        -->
+        <section id="sustitutos-alimentos" class="py-16 bg-secondary rounded-2xl">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">5. Sustitutos Inteligentes</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-justify">Encuentra alternativas para cualquier alimento. Te mostramos opciones con un valor nutricional similar para que no sacrifiques tus objetivos.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+                    <div class="relative">
+                        <label for="alternative-food-search" class="block font-medium mb-1">Alimento a sustituir</label>
+                        <input type="text" id="alternative-food-search" placeholder="Ej: Salmón" class="w-full p-3 rounded-lg text-lg form-input shadow-sm">
+                        <div id="alternative-suggestions" class="autocomplete-suggestions w-full rounded-b-lg hidden"></div>
+                    </div>
+                    <div>
+                        <label for="alternative-food-grams" class="block font-medium mb-1">Cantidad (gramos)</label>
+                        <input type="number" id="alternative-food-grams" placeholder="Ej: 150" class="w-full p-3 rounded-lg text-lg form-input shadow-sm">
+                    </div>
+                    <button id="find-alternatives-btn" class="md:col-span-2 btn-primary font-bold py-3 rounded-lg text-lg transform hover:scale-105 transition-transform">Encontrar Sustitutos</button>
+                </div>
+
+                <div id="alternatives-results-container" class="mt-8 hidden"></div>
+            </div>
+        </section>
+    </main>
+
+    <!--
+        PIE DE PÁGINA FIJO A LO ANCHO DE LA PÁGINA
+        FIXED WIDE FOOTER
+    -->
+    <footer class="fixed-footer">
+        <div class="container">
+            <p class="font-bold text-base mb-1">Aviso Importante</p>
+            <p class="text-sm">
+                Esta es una plataforma de código abierto y sin ánimo de lucro, creada con fines sociales para mejorar la salud de las personas. El uso, adaptación o lucro comercial del código y su contenido están estrictamente prohibidos y serán objeto de acciones legales.
+            </p>
+        </div>
+    </footer>
+
+
+    <!--
+        Pie de página principal. Contiene información legal y de contacto.
+        Main footer. Contains legal and contact information.
+    -->
+    <footer class="bg-secondary mt-16">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p class="font-bold text-lg text-primary">Global Nutrition</p>
+            <p class="mt-2 max-w-2xl mx-auto text-justify">
+                Esta herramienta proporciona estimaciones con fines educativos. Consulta siempre a un profesional de la salud o nutricionista antes de realizar cambios importantes en tu dieta.
+            </p>
+            <p class="mt-4 text-sm">&copy; 2025 Global Nutrition. Todos los derechos reservados.</p>
+            <p class="mt-1 text-sm">Autoría: Yerai García Cano</p>
+        </div>
+    </footer>
+
+<!--
+    Código JavaScript. Aquí está la lógica de la página web.
+    JavaScript code. This is where the logic of the website is located.
+-->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    //
+    // LÓGICA DEL MODO CLARO/OSCURO
+    // LIGHT/DARK MODE LOGIC
+    //
+    const themeToggle = document.getElementById('theme-toggle');
+    const lightIcon = document.getElementById('theme-icon-light');
+    const darkIcon = document.getElementById('theme-icon-dark');
+
+    // Comprueba si el modo oscuro está guardado en el navegador o si el sistema lo prefiere.
+    // Checks if dark mode is saved in the browser or if the system prefers it.
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        lightIcon.classList.add('hidden');
+        darkIcon.classList.remove('hidden');
+    } else {
+        document.documentElement.classList.remove('dark');
+        lightIcon.classList.remove('hidden');
+        darkIcon.classList.add('hidden');
+    }
+
+    // Añade un 'escuchador de eventos' al botón para cambiar el tema.
+    // Adds an 'event listener' to the button to toggle the theme.
+    themeToggle.addEventListener('click', () => {
+        // Añade o quita la clase 'dark' en el elemento HTML principal.
+        // Adds or removes the 'dark' class on the main HTML element.
+        document.documentElement.classList.toggle('dark');
+        lightIcon.classList.toggle('hidden');
+        darkIcon.classList.toggle('hidden');
+        // Guarda la preferencia del usuario en la memoria del navegador.
+        // Saves the user's preference in the browser's local storage.
+        if (document.documentElement.classList.contains('dark')) {
+            localStorage.setItem('theme', 'dark');
+        } else {
+            localStorage.setItem('theme', 'light');
+        }
+    });
+    
+    //
+    // LÓGICA DEL MENÚ MÓVIL
+    // MOBILE MENU LOGIC
+    //
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    mobileMenuToggle.addEventListener('click', () => {
+        // Muestra u oculta el menú móvil al hacer clic.
+        // Toggles the mobile menu's visibility on click.
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    // Base de datos de alimentos simulada.
+    // Simulated food database.
+    const foodDatabase = [
+        { name: "Manzana", calories: 52, protein: 0.3, carbs: 14, fat: 0.2, sugar: 10, fiber: 2.4, category: 'fruit', type: 'snack' },
+        { name: "Pechuga de Pollo", calories: 165, protein: 31, carbs: 0, fat: 3.6, sugar: 0, fiber: 0, category: 'protein', type: 'main' },
+        { name: "Arroz Blanco", calories: 130, protein: 2.7, carbs: 28, fat: 0.3, sugar: 0, fiber: 0.4, category: 'carb', type: 'main' },
+        { name: "Salmón", calories: 208, protein: 20, carbs: 0, fat: 13, sugar: 0, fiber: 0, category: 'protein', type: 'main' },
+        { name: "Huevo", calories: 78, protein: 6, carbs: 0.6, fat: 5, sugar: 0.6, fiber: 0, category: 'protein', type: 'breakfast' },
+        { name: "Brócoli", calories: 34, protein: 2.8, carbs: 7, fat: 0.4, sugar: 1.7, fiber: 2.6, category: 'vegetable', type: 'main' },
+        { name: "Lentejas", calories: 116, protein: 9, carbs: 20, fat: 0.4, sugar: 1.8, fiber: 7.9, category: 'carb', type: 'main' },
+        { name: "Aguacate", calories: 160, protein: 2, carbs: 9, fat: 15, sugar: 0.7, fiber: 7, category: 'fat', type: 'snack' },
+        { name: "Aceite de Oliva", calories: 884, protein: 0, carbs: 0, fat: 100, sugar: 0, fiber: 0, category: 'fat', type: 'main' },
+        { name: "Avena", calories: 389, protein: 16.9, carbs: 66.3, fat: 6.9, sugar: 0, fiber: 10.6, category: 'carb', type: 'breakfast' },
+        { name: "Plátano", calories: 89, protein: 1.1, carbs: 23, fat: 0.3, sugar: 12, fiber: 2.6, category: 'fruit', type: 'snack' },
+        { name: "Yogur Griego", calories: 59, protein: 10, carbs: 3.6, fat: 0.4, sugar: 3.2, fiber: 0, category: 'protein', type: 'breakfast' },
+        { name: "Espinacas", calories: 23, protein: 2.9, carbs: 3.6, fat: 0.4, sugar: 0.4, fiber: 2.2, category: 'vegetable', type: 'main' },
+        { name: "Ternera Magra", calories: 250, protein: 26, carbs: 0, fat: 15, sugar: 0, fiber: 0, category: 'protein', type: 'main' },
+        { name: "Patata", calories: 77, protein: 2, carbs: 17, fat: 0.1, sugar: 0.8, fiber: 2.2, category: 'carb', type: 'main' },
+        { name: "Almendras", calories: 579, protein: 21, carbs: 22, fat: 49, sugar: 4.4, fiber: 12.5, category: 'fat', type: 'snack' },
+        { name: "Pan Integral", calories: 247, protein: 13, carbs: 41, fat: 3.4, sugar: 3.7, fiber: 7.5, category: 'carb', type: 'breakfast' },
+        { name: "Queso Cottage", calories: 98, protein: 11, carbs: 3.4, fat: 4.3, sugar: 2.7, fiber: 0, category: 'protein', type: 'snack' },
+        { name: "Tomate", calories: 18, protein: 0.9, carbs: 3.9, fat: 0.2, sugar: 2.6, fiber: 1.2, category: 'vegetable', type: 'main' },
+        { name: "Garbanzos", calories: 164, protein: 8.9, carbs: 27, fat: 2.6, sugar: 4.8, fiber: 7.6, category: 'carb', type: 'main' },
+        { name: "Atún en lata", calories: 184, protein: 40, carbs: 0, fat: 1, sugar: 0, fiber: 0, category: 'protein', type: 'main' },
+        { name: "Leche entera", calories: 61, protein: 3.3, carbs: 4.8, fat: 3.3, sugar: 5.1, fiber: 0, category: 'protein', type: 'breakfast'},
+        { name: "Zanahoria", calories: 41, protein: 0.9, carbs: 10, fat: 0.2, sugar: 4.7, fiber: 2.8, category: 'vegetable', type: 'main'},
+        { name: "Fresa", calories: 32, protein: 0.7, carbs: 8, fat: 0.3, sugar: 4.9, fiber: 2, category: 'fruit', type: 'snack'}
+    ];
+
+    let userCalories = 0;
+    let macrosChartInstance = null;
+    let recipeMacrosChartInstance = null;
+
+    //
+    // LÓGICA DE LA CALCULADORA DE CALORÍAS
+    // CALORIE CALCULATOR LOGIC
+    //
+    const caloriesForm = document.getElementById('calories-form');
+    caloriesForm.addEventListener('submit', (e) => {
+        // Evita que el formulario se envíe de la forma tradicional, lo manejamos con JavaScript.
+        // Prevents the form from submitting in the traditional way, we handle it with JavaScript.
+        e.preventDefault();
+
+        // Obtiene los valores de los campos del formulario.
+        // Gets the values from the form fields.
+        const age = parseFloat(document.getElementById('age').value);
+        const gender = document.getElementById('gender').value;
+        const weight = parseFloat(document.getElementById('weight').value);
+        const height = parseFloat(document.getElementById('height').value);
+        const activity = parseFloat(document.getElementById('activity').value);
+        const goal = document.getElementById('goal').value;
+
+        // Calcula la Tasa Metabólica Basal (BMR).
+        // Calculates the Basal Metabolic Rate (BMR).
+        let bmr;
+        if (gender === 'male') {
+            bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+        } else {
+            bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+        }
+
+        // Calcula el Gasto Energético Diario Total (TDEE).
+        // Calculates the Total Daily Energy Expenditure (TDEE).
+        let tdee = bmr * activity;
+        let finalCalories;
+
+        // Ajusta las calorías según el objetivo del usuario (mantener, perder, ganar).
+        // Adjusts calories according to the user's goal (maintain, lose, gain).
+        switch(goal) {
+            case 'lose': finalCalories = tdee - 400; break;
+            case 'maintain': finalCalories = tdee; break;
+            case 'gain': finalCalories = tdee + 400; break;
+        }
+
+        userCalories = finalCalories;
+        document.getElementById('plan-calories-input').value = Math.round(userCalories);
+
+        // Calcula los macronutrientes (proteínas, carbohidratos, grasas).
+        // Calculates macronutrients (protein, carbs, fats).
+        const proteinGrams = weight * 1.8;
+        const proteinCalories = proteinGrams * 4;
+
+        const fatGrams = (finalCalories * 0.25) / 9;
+        const fatCalories = fatGrams * 9;
+
+        const carbsCalories = finalCalories - proteinCalories - fatCalories;
+        const carbsGrams = carbsCalories / 4;
+
+        // Muestra los resultados en la página.
+        // Displays the results on the page.
+        document.getElementById('total-calories').textContent = `${Math.round(finalCalories)} Kcal`;
+        document.getElementById('protein').textContent = `${Math.round(proteinGrams)}g`;
+        document.getElementById('carbs').textContent = `${Math.round(carbsGrams)}g`;
+        document.getElementById('fats').textContent = `${Math.round(fatGrams)}g`;
+
+        // Crea el gráfico circular para los macronutrientes.
+        // Creates the donut chart for macronutrients.
+        const ctx = document.getElementById('macros-chart').getContext('2d');
+        const chartData = {
+            labels: ['Proteínas', 'Carbohidratos', 'Grasas'],
+            datasets: [{
+                data: [proteinCalories, carbsCalories, fatCalories],
+                backgroundColor: ['#8DB38B', '#4A7C59', '#3B6247'],
+                borderColor: document.documentElement.classList.contains('dark') ? '#1a1a1a' : '#F9F7F3',
+                borderWidth: 4,
+            }]
+        };
+
+        // Si ya hay un gráfico, lo destruye para crear uno nuevo.
+        // If a chart already exists, it destroys it to create a new one.
+        if (macrosChartInstance) {
+            macrosChartInstance.destroy();
+        }
+
+        macrosChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                         labels: {
+                            color: document.documentElement.classList.contains('dark') ? '#F0F0F0' : '#1a1a1a',
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Muestra el contenedor con los resultados.
+        // Shows the container with the results.
+        document.getElementById('results-container').classList.remove('hidden');
+    });
+
+    //
+    // LÓGICA DEL EXPLORADOR DE ALIMENTOS
+    // FOOD EXPLORER LOGIC
+    //
+    const foodSearch = document.getElementById('food-search');
+    const foodSuggestions = document.getElementById('food-suggestions');
+    const foodDetailsContainer = document.getElementById('food-details-container');
+
+    // Maneja el autocompletado del campo de búsqueda.
+    // Handles the autocomplete for the search field.
+    foodSearch.addEventListener('input', () => {
+        const query = foodSearch.value.toLowerCase();
+        foodSuggestions.innerHTML = '';
+        if (query.length < 2) {
+            foodSuggestions.classList.add('hidden');
+            return;
+        }
+
+        // Filtra la base de datos de alimentos para encontrar coincidencias.
+        // Filters the food database to find matches.
+        const matches = foodDatabase.filter(food => food.name.toLowerCase().includes(query));
+
+        if (matches.length > 0) {
+            // Crea una lista de sugerencias.
+            // Creates a list of suggestions.
+            matches.forEach(food => {
+                const div = document.createElement('div');
+                div.textContent = food.name;
+                div.classList.add('autocomplete-suggestion');
+                div.addEventListener('click', () => {
+                    foodSearch.value = food.name;
+                    foodSuggestions.classList.add('hidden');
+                    // Llama a la función para mostrar los detalles del alimento.
+                    // Calls the function to display the food's details.
+                    displayFoodDetails(food);
+                });
+                foodSuggestions.appendChild(div);
+            });
+            foodSuggestions.classList.remove('hidden');
+        } else {
+            foodSuggestions.classList.add('hidden');
+        }
+    });
+
+    // Muestra los detalles nutricionales de un alimento.
+    // Displays the nutritional details of a food.
+    function displayFoodDetails(food) {
+        let recommendation = '';
+        if(food.protein > 15) recommendation += 'Excelente para ganar músculo. ';
+        if(food.fat < 5 && food.calories < 100) recommendation += 'Bueno para dietas de pérdida de peso. ';
+        if(food.carbs > 10 && food.fat < 5) recommendation += 'Buena fuente de energía pre-entreno.';
+
+        foodDetailsContainer.innerHTML = `
+            <div class="bg-secondary rounded-xl p-6 shadow-md">
+                <h3 class="text-2xl font-bold mb-4 text-primary">${food.name} (por 100g)</h3>
+                <div class="grid md:grid-cols-2 gap-x-8 gap-y-4">
+                    <div><strong>Calorías:</strong> ${food.calories} Kcal</div>
+                    <div><strong>Proteínas:</strong> ${food.protein}g</div>
+                    <div><strong>Carbohidratos:</strong> ${food.carbs}g</div>
+                    <div><strong>Grasas:</strong> ${food.fat}g</div>
+                    <div><strong>Azúcares:</strong> ${food.sugar}g</div>
+                    <div><strong>Fibra:</strong> ${food.fiber}g</div>
+                </div>
+                <div class="mt-6 pt-4 border-t border-gray-300 dark:border-gray-600">
+                    <h4 class="font-semibold">Recomendación:</h4>
+                    <p>${recommendation || 'Alimento versátil adecuado para la mayoría de dietas.'}</p>
+                </div>
+            </div>`;
+        foodDetailsContainer.classList.remove('hidden');
+    }
+
+    //
+    // LÓGICA DEL CREADOR DE RECETAS
+    // RECIPE CREATOR LOGIC
+    //
+    const addIngredientBtn = document.getElementById('add-ingredient');
+    const ingredientsList = document.getElementById('ingredients-list');
+    let ingredientCount = 0;
+
+    // Crea una nueva fila de ingredientes con campos de entrada y un botón de eliminar.
+    // Creates a new ingredient row with input fields and a remove button.
+    function createIngredientRow() {
+        ingredientCount++;
+        const ingredientId = `ingredient-${ingredientCount}`;
+        const div = document.createElement('div');
+        div.id = ingredientId;
+        div.classList.add('grid', 'grid-cols-1', 'md:grid-cols-3', 'gap-4', 'items-center');
+        div.innerHTML = `
+            <div class="relative md:col-span-2">
+                <input type="text" data-id="${ingredientId}" placeholder="Nombre del ingrediente" class="w-full p-3 rounded-lg form-input ingredient-search">
+                 <div class="autocomplete-suggestions w-full rounded-b-lg hidden ingredient-suggestions"></div>
+            </div>
+            <div class="flex items-center gap-2">
+                <input type="number" placeholder="Gramos" class="w-full p-3 rounded-lg form-input ingredient-grams">
+                <button class="remove-ingredient p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900 rounded-full">&times;</button>
+            </div>
+        `;
+        ingredientsList.appendChild(div);
+
+        // Añade un 'escuchador de eventos' para el autocompletado en el nuevo campo de búsqueda.
+        // Adds an 'event listener' for autocomplete on the new search field.
+        div.querySelector('.ingredient-search').addEventListener('input', handleRecipeAutocomplete);
+        // Añade un 'escuchador de eventos' para el botón de eliminar.
+        // Adds an 'event listener' for the remove button.
+        div.querySelector('.remove-ingredient').addEventListener('click', () => div.remove());
+    }
+
+    // Maneja el autocompletado de los ingredientes en el creador de recetas.
+    // Handles the autocomplete for ingredients in the recipe creator.
+    function handleRecipeAutocomplete(e) {
+        const input = e.target;
+        const suggestionsContainer = input.nextElementSibling;
+        const query = input.value.toLowerCase();
+
+        suggestionsContainer.innerHTML = '';
+        if (query.length < 2) {
+            suggestionsContainer.classList.add('hidden');
+            return;
+        }
+
+        const matches = foodDatabase.filter(food => food.name.toLowerCase().includes(query));
+
+        if (matches.length > 0) {
+            matches.forEach(food => {
+                const div = document.createElement('div');
+                div.textContent = food.name;
+                div.classList.add('autocomplete-suggestion');
+                div.addEventListener('click', () => {
+                    input.value = food.name;
+                    suggestionsContainer.classList.add('hidden');
+                });
+                suggestionsContainer.appendChild(div);
+            });
+            suggestionsContainer.classList.remove('hidden');
+        } else {
+            suggestionsContainer.classList.add('hidden');
+        }
+    }
+
+    addIngredientBtn.addEventListener('click', createIngredientRow);
+    createIngredientRow(); // Crea la primera fila de ingredientes al cargar la página. / Creates the first ingredient row on page load.
+
+    const calculateRecipeBtn = document.getElementById('calculate-recipe');
+    calculateRecipeBtn.addEventListener('click', () => {
+        let totalCalories = 0, totalProtein = 0, totalCarbs = 0, totalFat = 0;
+        const allIngredients = ingredientsList.querySelectorAll('.grid');
+
+        // Recorre todos los ingredientes para calcular los totales.
+        // Iterates through all ingredients to calculate totals.
+        allIngredients.forEach(row => {
+            const name = row.querySelector('.ingredient-search').value;
+            const grams = parseFloat(row.querySelector('.ingredient-grams').value);
+            const food = foodDatabase.find(f => f.name.toLowerCase() === name.toLowerCase());
+
+            if (food && grams > 0) {
+                const factor = grams / 100;
+                totalCalories += food.calories * factor;
+                totalProtein += food.protein * factor;
+                totalCarbs += food.carbs * factor;
+                totalFat += food.fat * factor;
+            }
+        });
+
+        // Muestra los resultados de la receta.
+        // Displays the recipe results.
+        document.getElementById('recipe-total-calories').textContent = `${Math.round(totalCalories)} Kcal`;
+        document.getElementById('recipe-protein').textContent = `${Math.round(totalProtein)}g`;
+        document.getElementById('recipe-carbs').textContent = `${Math.round(totalCarbs)}g`;
+        document.getElementById('recipe-fats').textContent = `${Math.round(totalFat)}g`;
+
+        const proteinCals = totalProtein * 4;
+        const carbsCals = totalCarbs * 4;
+        const fatCals = totalFat * 9;
+
+        // Crea el gráfico para la receta.
+        // Creates the chart for the recipe.
+        const ctx = document.getElementById('recipe-macros-chart').getContext('2d');
+        const chartData = {
+            labels: ['Proteínas', 'Carbohidratos', 'Grasas'],
+            datasets: [{
+                data: [proteinCals, carbsCals, fatCals],
+                backgroundColor: ['#8DB38B', '#4A7C59', '#3B6247'],
+                borderColor: document.documentElement.classList.contains('dark') ? '#1a1a1a' : '#F9F7F3',
+                borderWidth: 4,
+            }]
+        };
+
+        if (recipeMacrosChartInstance) {
+            recipeMacrosChartInstance.destroy();
+        }
+
+        recipeMacrosChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: document.documentElement.classList.contains('dark') ? '#F0F0F0' : '#1a1a1a',
+                            font: { size: 14 }
+                        }
+                    }
+                }
+            }
+        });
+
+        document.getElementById('recipe-results-container').classList.remove('hidden');
+    });
+
+    //
+    // LÓGICA DEL GENERADOR DE PLAN SEMANAL (LÓGICA MEJORADA)
+    // WEEKLY PLAN GENERATOR LOGIC (IMPROVED LOGIC)
+    //
+    const dietPlanForm = document.getElementById('diet-plan-form');
+    const dietPlanContainer = document.getElementById('diet-plan-container');
+    const dietPlanLoader = document.getElementById('diet-plan-loader');
+    const planDurationSelect = document.getElementById('plan-duration');
+    const dietPlannerTitle = document.getElementById('diet-planner-title');
+    const dietPlanButton = document.getElementById('diet-plan-button');
+    const mealCountSelect = document.getElementById('meal-count');
+
+    // Maneja el cambio del texto del título y del botón según la duración seleccionada
+    // Handles the change of the title and button text based on the selected duration
+    planDurationSelect.addEventListener('change', (e) => {
+        const selectedValue = e.target.value;
+        let titleText = '';
+        let buttonText = '';
+        switch(selectedValue) {
+            case 'weekly':
+                titleText = '4. Generador de Plan Semanal';
+                buttonText = 'Generar Plan Semanal';
+                break;
+            case 'monthly':
+                titleText = '4. Generador de Plan Mensual';
+                buttonText = 'Generar Plan Mensual';
+                break;
+            case 'quarterly':
+                titleText = '4. Generador de Plan Trimestral';
+                buttonText = 'Generar Plan Trimestral';
+                break;
+        }
+        dietPlannerTitle.textContent = titleText;
+        dietPlanButton.textContent = buttonText;
+    });
+
+    dietPlanForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        dietPlanContainer.classList.add('hidden');
+        dietPlanLoader.classList.remove('hidden');
+
+        // Obtiene la duración del plan y el número de comidas.
+        // Gets the plan duration and number of meals.
+        const planDuration = document.getElementById('plan-duration').value;
+        const mealCount = parseInt(mealCountSelect.value);
+
+        // Simula un tiempo de carga con setTimeout.
+        // Simulates a loading time with setTimeout.
+        setTimeout(() => {
+            generateDietPlan(planDuration, mealCount);
+            dietPlanLoader.classList.add('hidden');
+            dietPlanContainer.classList.remove('hidden');
+        }, 1500);
+    });
+
+    // Función principal para generar el plan de dieta.
+    // Main function to generate the diet plan.
+    function generateDietPlan(duration, mealCount) {
+        const dailyCalories = parseFloat(document.getElementById('plan-calories-input').value);
+        // Convierte los alimentos que no le gustan a una lista en minúsculas.
+        // Converts disliked foods to a lowercase list.
+        const disliked = document.getElementById('disliked-foods').value.toLowerCase().split(',').map(item => item.trim());
+
+        // Filtra la base de datos para excluir los alimentos que no le gustan.
+        // Filters the database to exclude disliked foods.
+        const availableFoods = foodDatabase.filter(food => !disliked.includes(food.name.toLowerCase()));
+
+        // Define las comidas a generar según la selección del usuario.
+        // Defines the meals to generate based on the user's selection.
+        let meals = [];
+        if (mealCount === 3) {
+            meals = ['Desayuno', 'Comida', 'Cena'];
+        } else if (mealCount === 4) {
+            meals = ['Desayuno', 'Comida', 'Merienda', 'Cena'];
+        } else if (mealCount === 5) {
+            meals = ['Desayuno', 'Almuerzo', 'Comida', 'Merienda', 'Cena'];
+        }
+
+        // Distribuye las calorías entre las comidas de forma equitativa.
+        // Distributes calories among the meals equally.
+        const dailyMealCalories = dailyCalories / meals.length;
+
+        const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+        const mealPlan = []; // Almacena el plan completo. / Stores the complete plan.
+
+        // Genera el plan día a día.
+        // Generates the plan day by day.
+        for (let i = 0; i < days.length; i++) {
+            const previousDayMeals = i > 0 ? mealPlan[i - 1] : null;
+            const mealsToday = {};
+            
+            // Genera cada comida del día.
+            // Generates each meal of the day.
+            for(const mealName of meals) {
+                mealsToday[mealName] = generateMeal(dailyMealCalories, mealName, availableFoods, mealsToday, previousDayMeals);
+            }
+
+            mealPlan.push(mealsToday);
+        }
+
+        // Determina el título del plan en base a la duración seleccionada.
+        // Determines the plan title based on the selected duration.
+        let durationTitle = 'Semanal';
+        if (duration === 'monthly') {
+            durationTitle = 'Mensual';
+        } else if (duration === 'quarterly') {
+            durationTitle = 'Trimestral';
+        }
+
+        // Genera el HTML del plan. Nota: Se genera una sola semana de ejemplo para evitar documentos muy largos.
+        // Generates the plan's HTML. Note: Only a single week is generated as an example to prevent very long documents.
+        let planHTML = `
+            <h3 class="text-3xl md:text-4xl font-bold text-center mb-6">Tu Plan de Dieta ${durationTitle}</h3>
+            <p class="text-center mb-8 max-w-2xl mx-auto">Este es un ejemplo de una semana; puedes repetirlo para el plan completo.</p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">`;
+
+        mealPlan.forEach((dayMeals, index) => {
+            planHTML += `<div class="bg-secondary p-4 rounded-xl shadow">
+                <h4 class="font-bold text-xl text-primary mb-3 text-center">${days[index]}</h4>
+                <div class="space-y-3">`;
+            
+            for(const mealName of meals) {
+                 planHTML += formatMeal(mealName, dayMeals[mealName]);
+            }
+
+            planHTML += `</div></div>`;
+        });
+
+        planHTML += '</div>';
+        dietPlanContainer.innerHTML = planHTML;
+    }
+
+    //
+    // LÓGICA MEJORADA PARA GENERAR CADA COMIDA
+    // IMPROVED LOGIC FOR GENERATING EACH MEAL
+    //
+    function generateMeal(targetCalories, mealType, foodList, currentDayMeals, previousDayMeals) {
+        let meal = { items: [], totalCalories: 0 };
+        const foodsToAvoid = [
+            ...Object.values(currentDayMeals).flatMap(m => m.items.map(i => i.name)),
+            ...(previousDayMeals ? previousDayMeals[mealType].items.map(i => i.name) : [])
+        ];
+        
+        let selectedFoods = [];
+        let baseCalories = targetCalories;
+
+        // Si es una comida principal, usa una combinación de macronutrientes.
+        // If it's a main meal, use a combination of macronutrients.
+        if (mealType === 'Comida' || mealType === 'Cena') {
+            const proteinFood = getRandomFoodByCategory('protein', foodList, foodsToAvoid);
+            const carbFood = getRandomFoodByCategory('carb', foodList, foodsToAvoid);
+            const vegFood = getRandomFoodByCategory('vegetable', foodList, foodsToAvoid);
+            
+            selectedFoods.push(proteinFood, carbFood, vegFood);
+            
+            // Asigna un factor de calorías a cada macronutriente.
+            // Assigns a calorie factor to each macronutrient.
+            const proteinFactor = 0.45;
+            const carbFactor = 0.35;
+            const vegFactor = 0.20;
+            
+            if (proteinFood) {
+                const grams = (baseCalories * proteinFactor) / (proteinFood.calories / 100);
+                meal.items.push({ name: proteinFood.name, quantity: Math.round(grams) });
+                meal.totalCalories += (proteinFood.calories / 100) * grams;
+            }
+            if (carbFood) {
+                const grams = (baseCalories * carbFactor) / (carbFood.calories / 100);
+                meal.items.push({ name: carbFood.name, quantity: Math.round(grams) });
+                meal.totalCalories += (carbFood.calories / 100) * grams;
+            }
+            if (vegFood) {
+                const grams = (baseCalories * vegFactor) / (vegFood.calories / 100);
+                meal.items.push({ name: vegFood.name, quantity: Math.round(grams) });
+                meal.totalCalories += (vegFood.calories / 100) * grams;
+            }
+
+        // Si es un desayuno, almuerzo o merienda, usa alimentos más ligeros.
+        // If it's a breakfast, lunch, or snack, use lighter foods.
+        } else {
+            const mealTypeFoods = foodList.filter(f => f.type === 'breakfast' || f.type === 'snack');
+            const filteredFoods = mealTypeFoods.filter(f => !foodsToAvoid.includes(f.name));
+
+            let currentCalories = 0;
+            let foodCounter = 0;
+            while(currentCalories < baseCalories && foodCounter < 3) { // Limita a 3 alimentos por comida ligera. / Limits to 3 foods per light meal.
+                if(filteredFoods.length === 0) break;
+                const randomFood = filteredFoods[Math.floor(Math.random() * filteredFoods.length)];
+                
+                // Calcula la cantidad necesaria para llenar las calorías restantes.
+                // Calculates the quantity needed to fill the remaining calories.
+                const remainingCals = baseCalories - currentCalories;
+                const quantity = Math.min(200, (remainingCals / randomFood.calories) * 100);
+
+                if (quantity > 0) {
+                    meal.items.push({ name: randomFood.name, quantity: Math.round(quantity) });
+                    meal.totalCalories += (randomFood.calories / 100) * quantity;
+                    currentCalories += (randomFood.calories / 100) * quantity;
+                }
+                
+                foodCounter++;
+                // Elimina el alimento para evitar la repetición en la misma comida.
+                // Removes the food to prevent repetition in the same meal.
+                const index = filteredFoods.indexOf(randomFood);
+                if (index > -1) {
+                    filteredFoods.splice(index, 1);
+                }
+            }
+        }
+        return meal;
+    }
+
+    // Obtiene un alimento aleatorio de una categoría, evitando los alimentos ya usados.
+    // Gets a random food from a category, avoiding already used foods.
+    function getRandomFoodByCategory(category, foodList, avoidedFoods) {
+        const filtered = foodList.filter(f => f.category === category && !avoidedFoods.includes(f.name));
+        return filtered.length > 0 ? filtered[Math.floor(Math.random() * filtered.length)] : null;
+    }
+
+    // Formatea los datos de la comida en una lista HTML.
+    // Formats the meal data into an HTML list.
+    function formatMeal(mealName, mealData) {
+        let html = `<div>
+            <p class="font-semibold">${mealName} (~${Math.round(mealData.totalCalories)} Kcal)</p>
+            <ul class="list-disc list-inside text-sm pl-2">`;
+        mealData.items.forEach(item => {
+            html += `<li>${item.name}: ${item.quantity}g</li>`;
+        });
+        html += `</ul></div>`;
+        return html;
+    }
+
+    //
+    // LÓGICA DE LA SECCIÓN DE SUSTITUTOS INTELIGENTES
+    // SMART SUBSTITUTES SECTION LOGIC
+    //
+    const alternativeFoodSearch = document.getElementById('alternative-food-search');
+    const alternativeFoodGrams = document.getElementById('alternative-food-grams');
+    const findAlternativesBtn = document.getElementById('find-alternatives-btn');
+    const alternativeSuggestions = document.getElementById('alternative-suggestions');
+    const alternativesResultsContainer = document.getElementById('alternatives-results-container');
+
+    // Maneja el autocompletado del campo de búsqueda de sustitutos.
+    // Handles the autocomplete for the substitutes search field.
+    alternativeFoodSearch.addEventListener('input', () => {
+        const query = alternativeFoodSearch.value.toLowerCase();
+        alternativeSuggestions.innerHTML = '';
+        if (query.length < 2) {
+            alternativeSuggestions.classList.add('hidden');
+            return;
+        }
+        const matches = foodDatabase.filter(food => food.name.toLowerCase().includes(query));
+        if (matches.length > 0) {
+            matches.forEach(food => {
+                const div = document.createElement('div');
+                div.textContent = food.name;
+                div.classList.add('autocomplete-suggestion');
+                div.addEventListener('click', () => {
+                    alternativeFoodSearch.value = food.name;
+                    alternativeSuggestions.classList.add('hidden');
+                });
+                alternativeSuggestions.appendChild(div);
+            });
+            alternativeSuggestions.classList.remove('hidden');
+        } else {
+            alternativeSuggestions.classList.add('hidden');
+        }
+    });
+
+    findAlternativesBtn.addEventListener('click', () => {
+        const foodName = alternativeFoodSearch.value;
+        const foodGrams = parseFloat(alternativeFoodGrams.value);
+        
+        alternativesResultsContainer.innerHTML = '';
+        alternativesResultsContainer.classList.remove('hidden');
+
+        if (!foodName || isNaN(foodGrams) || foodGrams <= 0) {
+            alternativesResultsContainer.innerHTML = `<p class="text-center text-red-500">Por favor, introduce un alimento y una cantidad válida.</p>`;
+            return;
+        }
+        
+        const originalFood = foodDatabase.find(f => f.name.toLowerCase() === foodName.toLowerCase());
+
+        if (!originalFood) {
+            alternativesResultsContainer.innerHTML = `<p class="text-center text-red-500">El alimento "${foodName}" no se encontró en la base de datos.</p>`;
+            return;
+        }
+        
+        findFoodAlternatives(originalFood, foodGrams);
+    });
+
+    // Busca y muestra las alternativas para un alimento dado.
+    // Finds and displays alternatives for a given food.
+    function findFoodAlternatives(originalFood, originalGrams) {
+        const originalCalories = (originalFood.calories / 100) * originalGrams;
+        const originalProtein = (originalFood.protein / 100) * originalGrams;
+        const originalCarbs = (originalFood.carbs / 100) * originalGrams;
+        const originalFat = (originalFood.fat / 100) * originalGrams;
+        
+        const alternatives = foodDatabase.filter(f => 
+            f.category === originalFood.category && f.name !== originalFood.name
+        );
+
+        if (alternatives.length === 0) {
+            alternativesResultsContainer.innerHTML = `<p class="text-center text-red-500">No se encontraron alternativas para la categoría "${originalFood.category}".</p>`;
+            return;
+        }
+        
+        let html = `<div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md">
+            <h3 class="text-2xl font-bold mb-4 text-primary">Sustitutos para ${originalFood.name} (${originalGrams}g)</h3>
+            <div class="mb-6">
+                <p><strong>Total original:</strong> ${Math.round(originalCalories)} Kcal, ${Math.round(originalProtein)}g Proteínas, ${Math.round(originalCarbs)}g Carbs, ${Math.round(originalFat)}g Grasas</p>
+            </div>
+            <div class="space-y-4">`;
+
+        alternatives.forEach(alt => {
+            // Calcula la cantidad necesaria para igualar las calorías.
+            // Calculates the quantity needed to match the calories.
+            const quantity = (originalCalories / alt.calories) * 100;
+            const protein = (alt.protein / 100) * quantity;
+            const carbs = (alt.carbs / 100) * quantity;
+            const fat = (alt.fat / 100) * quantity;
+
+            html += `<div class="p-4 border border-secondary rounded-lg">
+                <p class="font-semibold text-lg">${alt.name} <span class="text-sm font-normal">(${Math.round(quantity)}g)</span></p>
+                <ul class="flex justify-between text-sm mt-2">
+                    <li><span class="font-bold">Proteínas:</span> ${Math.round(protein)}g</li>
+                    <li><span class="font-bold">Carbs:</span> ${Math.round(carbs)}g</li>
+                    <li><span class="font-bold">Grasas:</span> ${Math.round(fat)}g</li>
+                </ul>
+            </div>`;
+        });
+
+        html += `</div></div>`;
+        alternativesResultsContainer.innerHTML = html;
+    }
+});
+</script>
+</body>
+</html>
